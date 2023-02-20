@@ -19,7 +19,6 @@ async function crawlPage(baseURL, currentURL, pages){
     console.log(`Actively crawling ${currentURL}`)
     try{
         const resp = await fetch(currentURL)
-        console.log(resp.status)
         if(resp.status > 399){
             console.log(`Error in fetch with status code ${resp.status} in url ${currentURL}`)
             return pages
@@ -33,13 +32,12 @@ async function crawlPage(baseURL, currentURL, pages){
 
         const htmlBody = await resp.text()
         const nextURLs =  getURLfromHTML(htmlBody, baseURL)
-        // console.log(nextURLs)
 
-        for(const nextURL in nextURLs){
+        for(const nextURL of nextURLs){
             if(nextURL.includes('about:blank#')){
                 continue
             }
-            pages = await crawlPage(baseURLObj, nextURL, pages)
+            pages = await crawlPage(baseURL, nextURL, pages)
         }
 
     }catch(err){
